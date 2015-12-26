@@ -32,3 +32,7 @@ Put the following script in pages you want to monitor variuos browser timers, an
         };
 
     }(document, "script"));
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/LACNIC/monitor/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
