@@ -101,8 +101,12 @@ STATIC_URL = "/static/"
 STATIC_ROOT = "%s/app/static/" % os.getcwd()
 
 # Path to the geolocation files
-GEOIP_PATH = '%s/geolocation' % (STATIC_ROOT)
+GEOIP_PATH = '%sgeolocation' % (STATIC_ROOT)
 GEOIP_DATABASE = '%s/%s' % (GEOIP_PATH, "GeoLite2-Country.mmdb")
+# GEOIP_DATABASE = '%s/%s' % (GEOIP_PATH, "GeoIP.dat")
+# GEOIP_ASN_DATABASE = '%s/%s' % (GEOIP_PATH, "GeoIPASNum.dat")
+
+LACNIC_NETWORKS = [ "179.0.156.0/22", "190.112.52.0/22", "200.0.86.0/23", "200.0.88.0/24", "200.3.12.0/22", "200.7.84.0/23", "200.7.86.0/23", "200.10.60.0/23", "200.10.62.0/23", "2001:13c7:7001::/48", "2001:13c7:7002::/48", "2001:13c7:7003::/48", "2001:13c7:7010::/46", "2801::/48" ]
 
 # Allow all sites to do CORS requests
 CORS_ORIGIN_ALLOW_ALL = True
