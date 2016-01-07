@@ -44,6 +44,7 @@ class Command(BaseCommand):
             else:
                 countries['v6'][cc] = [dt]
 
+        ratios = {}
         for cc in countries['v4'].keys():
             if cc not in countries['v6'].keys(): continue
 
@@ -52,4 +53,17 @@ class Command(BaseCommand):
             avgv4 = sum(latsv4) / len(latsv4)
             avgv6 = sum(latsv6) / len(latsv6)
 
-            print "['%s', %s]," % (cc, (avgv6 - avgv4) / max(avgv4, avgv6))
+            ratio = (avgv4 - avgv6) / max(avgv4, avgv6)
+
+            ratios[cc] = ratio
+
+        import operator
+        ratios = sorted(ratios.items(), key=operator.itemgetter(1))
+        for ratio in ratios:
+            print "['%s', %s]," % (ratio[0], ratio[1])
+
+        lats = Medicion.objects.clean()
+        lat_values = []
+        for l in lats:
+            lat_values.append(l.lat)
+        print "Regional average %s ms" % (sum(lat_values) / len(lat_values))

@@ -10,7 +10,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # DNS times
         import geoip2.database
-        from geoip2.errors import AddressNotFoundError
 
         reader = geoip2.database.Reader(settings.GEOIP_DATABASE)
         countries = {}
@@ -24,36 +23,17 @@ class Command(BaseCommand):
 
         for c in countries:
             lats = countries[c]
-            print "['%s', %s]," % (c, sum(lats) / len(lats))
+            countries[c] = sum(lats) / len(lats)
+            # print "['%s', %s]," % (c, countries[c])
 
-            # Bandwidth
-            # for d in Medicion.objects.clean():
-            # try:
-            #         cc = reader.country(d.ip_origin).country.iso_code
-            #     except AddressNotFoundError:
-            #         cc = 'XX'
-            #     dt = d.bw
-            #     if cc in countries.keys():
-            #         countries[cc].append(dt)
-            #     else:
-            #         countries[cc] = [dt]
-            #
-            # for c in countries:
-            #     lats = countries[c]
-            #     # print "['%s', %s]," % (c, sum(lats) / len(lats))
-            #
-            #  # Latency
-            # for d in Medicion.objects.clean():
-            #     try:
-            #         cc = reader.country(d.ip_origin).country.iso_code
-            #     except AddressNotFoundError:
-            #         cc = 'XX'
-            #     dt = d.lat
-            #     if cc in countries.keys():
-            #         countries[cc].append(dt)
-            #     else:
-            #         countries[cc] = [dt]
-            #
-            # for c in countries:
-            #     lats = countries[c]
-            #     # print "['%s', %s]," % (c, sum(lats) / len(lats))
+        import operator
+        ratios = sorted(countries.items(), key=operator.itemgetter(1))
+        for ratio in ratios:
+            valores = ratio[1]
+            pais = ratio[0]
+            print pais, valores
+
+        not_cached = len(Medicion.objects.dns())
+        cached = len(Medicion.objects.dns_cached())
+        print not_cached
+        print cached + not_cached
