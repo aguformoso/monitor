@@ -13,7 +13,6 @@ maxminddb==1.2.0
 mock==1.0.1
 numpy==1.9.1
 psycopg2==2.6
-pyplot==0.0.11
 ua-parser==0.3.6
 urllib3==1.10.2
 user-agents==0.3.2
