@@ -19,7 +19,13 @@ class MedicionReadOnlyAdmin(MedicionAdmin):
 
 class MedicionAdmin(MedicionReadOnlyAdmin):
     fields = ()
-    list_display = ['date', 'url', 'country_origin']
+    list_display = ['date', 'base_url', 'country_origin']
+
+    def base_url(self, obj):
+        return '/'.join(obj.url.split('/')[0:3])
+
+    this.short_description = "Base URL"
+
     ordering = ['-date']
     search_fields = ['country_origin', 'url']
 
