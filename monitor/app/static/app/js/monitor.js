@@ -42,7 +42,8 @@
 
                 BOOMR.init({
                     beacon_url: "https://monitor.dev.lacnic.net/post/",
-                    beacon_type: "POST"
+                    beacon_type: "POST",
+                    log: false
                 });
             })
         });
