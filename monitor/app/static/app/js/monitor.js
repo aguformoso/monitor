@@ -41,7 +41,7 @@
                 });
 
                 BOOMR.init({
-                    beacon_url: "http://127.0.0.1:8000/post/",
+                    beacon_url: "https://monitor.dev.lacnic.net/post/",
                     beacon_type: "POST"
                 });
             })
