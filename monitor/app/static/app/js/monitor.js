@@ -19,7 +19,7 @@
             }
         });
 
-        require(["boomerang", "rt", "navtiming"], function () {
+        require(["boomerang", "rt", "navtiming"], function (BOOMR, RT, NT) {
             // Configuration loaded now, safe to do other require calls
             // that depend on that config.
 
