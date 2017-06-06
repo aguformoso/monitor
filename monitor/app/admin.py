@@ -24,7 +24,7 @@ class MedicionAdmin(MedicionReadOnlyAdmin):
     def base_url(self, obj):
         return '/'.join(obj.url.split('/')[0:3])
 
-    this.short_description = "Base URL"
+    base_url.short_description = "Base URL"
 
     ordering = ['-date']
     search_fields = ['country_origin', 'url']
