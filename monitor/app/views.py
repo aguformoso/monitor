@@ -29,9 +29,6 @@ def post(request):
 
     now = datetime.datetime.now()
 
-    # if request.method != 'POST':
-    #     return HttpResponseBadRequest("Bad Method", content_type='text')
-
     remote_addr = request.META['REMOTE_ADDR']
 
     http_post = request.POST
@@ -73,7 +70,7 @@ def post(request):
         nt_unload_end = parseFloat(http_post.get('nt_unload_end'))
         nt_spdy = parseFloat(http_post.get('nt_spdy'))
         nt_first_paint = parseFloat(http_post.get('nt_first_paint'))
-        rt_start = http_post.get('rt.start')
+        rt_start = http_post.get('rt.start', '')
         rt_tstart = parseFloat(http_post.get('rt.tstart'))
         rt_bstart = parseFloat(http_post.get('rt.bstart'))
         rt_end = parseFloat(http_post.get('rt.end'))
