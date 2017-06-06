@@ -1,11 +1,9 @@
-import math
-from __builtin__ import type
-
+import datetime
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponseBadRequest, HttpResponse, HttpResponseServerError
+from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from models import *
-import datetime
 
 
 def home(request):
@@ -16,30 +14,27 @@ def parseFloat(string):
     try:
         return float(string)
     except Exception as te:
-        print te.message
+        # print te.message
         return 0.0
 
 
 @csrf_exempt
+@require_http_methods(["POST"])
 def post(request):
     """
-    View that attends the measurment POST results.
-    :param request:
-    :return:HTTP 200 OK | ERROR
+        View that attends the measurment POST results.
+        :param request:
+        :return:HTTP 200 OK | ERROR
     """
-
-
 
     now = datetime.datetime.now()
 
-    if request.method != 'POST':
-        return HttpResponse("Bad Request")
+    # if request.method != 'POST':
+    #     return HttpResponseBadRequest("Bad Method", content_type='text')
 
     remote_addr = request.META['REMOTE_ADDR']
 
     http_post = request.POST
-
-    print http_post
 
     lat = parseFloat(http_post.get('lat'))
     lat_err = parseFloat(http_post.get('lat_err'))
@@ -49,6 +44,7 @@ def post(request):
     url = http_post.get('u')
 
     user_agent = http_post.get('user_agent')
+    country_origin = http_post.get('country_origin')
 
     try:
         t_page = parseFloat(http_post.get('t_page'))
@@ -83,58 +79,59 @@ def post(request):
         rt_end = parseFloat(http_post.get('rt.end'))
         bw_time = parseFloat(http_post.get('bw_time'))
 
-        med = Medicion(url=url,
-                       user_agent=user_agent,
-                       date=now,
-                       ip_origin=remote_addr,
+        med = Medicion(
+            url=url,
+            user_agent=user_agent,
+            date=now,
+            ip_origin=remote_addr,
 
-                       country_origin=models.CharField(default='XX'),
-                       country_destination=models.CharField(default='XX'),
-                       as_origin=models.IntegerField(default=0),
-                       as_destination=models.IntegerField(default=0),
+            country_origin=country_origin,
+            # country_destination='XX',
+            # as_origin=0,
+            # as_destination=0,
 
-                       t_page=t_page,
-                       t_done=t_done,
+            t_page=t_page,
+            t_done=t_done,
 
-                       lat=lat,
-                       lat_err=lat_err,
-                       bw=bw,
-                       bw_err=bw_err,
-                       nt_red_cnt=nt_red_cnt,
-                       nt_nav_type=nt_nav_type,
-                       nt_nav_st=nt_nav_st,
-                       nt_red_st=nt_red_st,
-                       nt_red_end=nt_red_end,
-                       nt_fet_st=nt_fet_st,
-                       nt_dns_st=nt_dns_st,
-                       nt_dns_end=nt_dns_end,
-                       nt_con_st=nt_con_st,
-                       nt_con_end=nt_con_end,
-                       nt_req_st=nt_req_st,
-                       nt_res_st=nt_res_st,
-                       nt_res_end=nt_res_end,
-                       nt_domloading=nt_domloading,
-                       nt_domint=nt_domint,
-                       nt_domcontloaded_st=nt_domcontloaded_st,
-                       nt_domcontloaded_end=nt_domcontloaded_end,
-                       nt_domcomp=nt_domcomp,
-                       nt_load_st=nt_load_st,
-                       nt_load_end=nt_load_end,
-                       nt_unload_st=nt_unload_st,
-                       nt_unload_end=nt_unload_end,
-                       nt_spdy=nt_spdy,
-                       nt_first_paint=nt_first_paint,
-                       rt_start=rt_start,
-                       rt_tstart=rt_tstart,
-                       rt_bstart=rt_bstart,
-                       rt_end=rt_end,
-                       bw_time=bw_time
+            lat=lat,
+            lat_err=lat_err,
+            bw=bw,
+            bw_err=bw_err,
+            nt_red_cnt=nt_red_cnt,
+            nt_nav_type=nt_nav_type,
+            nt_nav_st=nt_nav_st,
+            nt_red_st=nt_red_st,
+            nt_red_end=nt_red_end,
+            nt_fet_st=nt_fet_st,
+            nt_dns_st=nt_dns_st,
+            nt_dns_end=nt_dns_end,
+            nt_con_st=nt_con_st,
+            nt_con_end=nt_con_end,
+            nt_req_st=nt_req_st,
+            nt_res_st=nt_res_st,
+            nt_res_end=nt_res_end,
+            nt_domloading=nt_domloading,
+            nt_domint=nt_domint,
+            nt_domcontloaded_st=nt_domcontloaded_st,
+            nt_domcontloaded_end=nt_domcontloaded_end,
+            nt_domcomp=nt_domcomp,
+            nt_load_st=nt_load_st,
+            nt_load_end=nt_load_end,
+            nt_unload_st=nt_unload_st,
+            nt_unload_end=nt_unload_end,
+            nt_spdy=nt_spdy,
+            nt_first_paint=nt_first_paint,
+            rt_start=rt_start,
+            rt_tstart=rt_tstart,
+            rt_bstart=rt_bstart,
+            rt_end=rt_end,
+            bw_time=bw_time
         )
         med.save()
+        print med
     except Exception as e:
-        print e
-        response = HttpResponse("ERROR")
-        return response
+        print e, e.message
+        return HttpResponseServerError("ERROR")
 
     response = HttpResponse("OK")
     return response
