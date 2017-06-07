@@ -4,12 +4,15 @@ import urllib2
 from django.db import models
 from django.db.models.fields import FloatField, DateTimeField, TextField, IPAddressField
 from django.db.models.fields.related import ForeignKey
+# from django.contrib.auth.models import User
+from django.conf import settings
 
 import user_agents
 
 
 class Page(models.Model):
     url = TextField(default='')
+    owner = ForeignKey(settings.AUTH_USER_MODEL)
 
     def scan(self):
         r = urllib2.urlopen(self.url)
