@@ -7,10 +7,7 @@ For more information on this file, see
 https://docs.djangoproject.com/en/1.7/howto/deployment/wsgi/
 """
 
-import newrelic.agent
 import os, sys
-
-newrelic.agent.initialize()
 
 sys.path.append('/opt/django/monitor/monitor')
 
