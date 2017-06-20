@@ -20,3 +20,6 @@ except ImportError:
     DEFAULT_FROM_EMAIL = ""
     SERVER_EMAIL = ""
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+ALLOWED_HOSTS = ['*']
+CORS_ORIGIN_ALLOW_ALL = True
