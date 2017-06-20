@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import HttpResponse
 from django.shortcuts import render
 import json
+from monitor import settings
 import numpy as np
 import requests
 from datetime import datetime, timedelta
