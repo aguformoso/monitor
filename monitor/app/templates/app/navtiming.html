@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Navigation Timing metrics</title>
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="https://www.google.com/jsapi" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+<div class="panel panel-default">
+
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">WebSiteName</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#site">Mi sitio</a></li>
+                <li><a href="#platform">Plataforma</a></li>
+                <li><a href="#about">Acerca</a></li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <div id="site" style="margin-top: 5em;">
+        <h1>Métricas web recolectadas</h1>
+        <p>Sitios incluidos en este reporte</p>
+        <ul>
+            {% for p in pages %}
+                <li>{{ p }}</li>
+            {% endfor %}
+        </ul>
+
+        <div class="row">
+            <div class="col-lg-2">
+                <h2>TCP connection timeline</h2>
+            </div>
+
+            <script type="text/javascript">
+                {{ timeline | safe }}
+            </script>
+            <div class="col-lg-10">
+                <div id="timeline"></div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-lg-2">
+                <h2>HTTP/s response time</h2>
+                <p>Tiempo que transcurre entre el envío de una solicitud HTTP y la llegada de su respuesta</p>
+            </div>
+
+            <div class="col-lg-10">
+                <script type="text/javascript">
+                    {{ req_timeline | safe }}
+                </script>
+                <div id="req_timeline"></div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-lg-2">
+                <h2>DNS resolution timeline (not cached)</h2>
+            </div>
+
+            <div class="col-lg-10">
+                <script type="text/javascript">
+                    {{ dns_timeline | safe }}
+                </script>
+                <div id="dns_timeline"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="platform">
+        <h2>Datos de la plataforma</h2>
+
+        <div class="row">
+            <div class="col-lg-2">
+                <h2>Cantidad de mediciones</h2>
+                <p>Aquí se muestra la cantidad de mediciones realizadas, agregadas por minuto.</p>
+            </div>
+
+            <div class="col-lg-10">
+                <script type="text/javascript">
+                    {{ platform_timeline | safe }}
+                </script>
+                <div id="platform_timeline" class="timeseries" style="width: 100%"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="about">
+        <h2>Acerca</h2>
+    </div>
+
+</div>
+
+
+</body>
+</html>

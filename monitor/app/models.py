@@ -147,6 +147,26 @@ class Medicion(models.Model):
     def __str__(self):
         return "%s %s %s" % (self.print_lat(), self.print_bw(), self.print_date())
 
+    @property
+    def tcp_conn(self):
+        return self.nt_con_end - self.nt_con_st
+
+    @property
+    def request_respond(self):
+        return self.nt_res_end - self.nt_req_st
+
+    @property
+    def dns(self):
+        return self.nt_dns_end - self.nt_dns_st
+
+    @property
+    def isv4(self):
+        return '.' in self.ip_origin
+
+    @property
+    def isv6(self):
+        return not self.isv4
+
     def print_lat(self):
         return "%s ms" % str(float(self.lat))
 
