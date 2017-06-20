@@ -1,3 +1,6 @@
+{% load staticfiles %}
+{% load i18n %}
+
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -11,26 +14,80 @@
 
     <script src="https://www.google.com/jsapi" type="text/javascript"></script>
 
+
+    <!-- Progress bar -->
+    <link rel='stylesheet' href='//cdn.dev.lacnic.net/mprogress.css'/>
+    <script src='//cdn.dev.lacnic.net/mprogress.js'></script>
+
+    <link rel="stylesheet" type="text/css" href="{% static "app/css/stun.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "app/css/lacniclabs-portales-negro.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "app/css/lacniclabs-override.css" %}">
+
+    <link type="image/x-icon" href="{% static "app/imgs/favicon-b.ico" %}" rel="shortcut icon">
+    <link rel="apple-touch-icon" href="{% static "app/imgs/favicon-b.ico" %}">
+
 </head>
 
 <body>
 
+{#Barra anaranjada#}
+<div id="barra-primaria" class="navbar">
+
+    <a href="https://www.labs.lacnic.net" title="LACNIC labs" class="pull-left">
+        <img src="{% static 'app/imgs/logos/logo_labs.png' %}" border="0" class="hidden-xs"
+             alt="LACNIC Labs" style="max-height: 5em;"/>
+        <img src="{% static 'app/imgs/logos/logo_labs_small.png' %}" border="0" class="visible-xs"
+             alt="LACNIC Labs" style="max-height: 3em;"/>
+    </a>
+
+    <a id="titulo-primario" class="navbar-brand pull-right" href="{% url 'home' %}">
+        <h2>
+            NAT Meter
+        </h2>
+    </a>
+</div>
+
+{#Segunda barra#}
+<div id="barra-secundaria" class="navbar" style="margin-bottom: 0">
+
+    <ul class="nav navbar-nav hidden-xs">
+        {#        <li><a href="http://lacnic.net">{% trans "bar.secondary.home" %}</a></li>#}
+        {#        <li><a href="http://labs.lacnic.net">{% trans "bar.secondary.blog" %}</a></li>#}
+        <li><a href="http://labs.lacnic.net">LACNIC Labs</a></li>
+        <li><a href="http://lacnic.net">LACNIC Home</a></li>
+        <li><a href="https://simon.lacnic.net">Proyecto Simón</a></li>
+        <li><a href="https://natmeter.lacnic.net">NAT Meter</a></li>
+    </ul>
+
+    <ul id="setlang" class="nav navbar-nav navbar-right" style="margin-right: 1em; margin-left: 1em;">
+        <li><a href="#" onclick="langRedirect('en');">EN</a></li>
+        <li><a href="#" onclick="langRedirect('es');">ES</a></li>
+        <li>
+            <span
+                    class="glyphicon glyphicon-info-sign"
+                    data-toggle="tooltip"
+                    title="{% trans "bar.secondary.cookie" %}"
+            ></span>
+        </li>
+        <!-- Material Design loading component -->
+        <div
+                id="setlang-progress"
+                {#                class="mdl-progress mdl-js-progress"#}
+                style="height:1px; width:5em; top:-15px; left:1em;"
+        ></div>
+    </ul>
+</div>
+
+{#Segunda barra#}
+<div id="barra-terciaria" class="navbar">
+    <ul class="nav navbar-nav">
+        <li class="active"><a href="#site">Mi sitio</a></li>
+        <li><a href="#platform">Plataforma</a></li>
+        <li><a href="#about">Acerca</a></li>
+    </ul>
+</div>
+
 <div class="panel panel-default">
-
-
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">WebSiteName</a>
-            </div>
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#site">Mi sitio</a></li>
-                <li><a href="#platform">Plataforma</a></li>
-                <li><a href="#about">Acerca</a></li>
-            </ul>
-        </div>
-    </nav>
-
 
     <div id="site" style="margin-top: 5em;">
         <h1>Métricas web recolectadas</h1>
@@ -43,7 +100,7 @@
 
         <div class="row">
             <div class="col-lg-2">
-                <h2>TCP connection timeline</h2>
+                <h3>TCP connection timeline</h3>
             </div>
 
             <script type="text/javascript">
@@ -57,7 +114,7 @@
 
         <div class="row">
             <div class="col-lg-2">
-                <h2>HTTP/s response time</h2>
+                <h3>HTTP/s response time</h3>
                 <p>Tiempo que transcurre entre el envío de una solicitud HTTP y la llegada de su respuesta</p>
             </div>
 
@@ -72,7 +129,7 @@
 
         <div class="row">
             <div class="col-lg-2">
-                <h2>DNS resolution timeline (not cached)</h2>
+                <h3>DNS resolution timeline (not cached)</h3>
             </div>
 
             <div class="col-lg-10">
@@ -89,7 +146,7 @@
 
         <div class="row">
             <div class="col-lg-2">
-                <h2>Cantidad de mediciones</h2>
+                <h3>Cantidad de mediciones</h3>
                 <p>Aquí se muestra la cantidad de mediciones realizadas, agregadas por minuto.</p>
             </div>
 

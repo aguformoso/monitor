@@ -184,7 +184,8 @@ def navtiming(request):
     ##################
 
     rtts_objects = defaultdict(lambda: defaultdict(int))
-    for m in Medicion.objects.all():
+    for m in Medicion.objects.filter(
+            date__gte=datetime.now() - timedelta(days=7)):
         date = m.date.replace(minute=0, second=0).strftime("%Y-%m-%dT%H:%M:%S")
 
         if m.isv4:
