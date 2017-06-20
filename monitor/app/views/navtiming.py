@@ -1,14 +1,15 @@
-from app.models import Page, Medicion
-from collections import defaultdict
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import HttpResponse
-from django.shortcuts import render
 import json
-from monitor import settings
+from collections import defaultdict
+
 import numpy as np
 import requests
 from datetime import datetime, timedelta
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 
+from app.models import Page, Medicion
+# from monitor.settings import settings
+from django.conf import settings
 
 @login_required(login_url='/admin/login')
 def navtiming(request):

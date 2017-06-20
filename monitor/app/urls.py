@@ -2,8 +2,10 @@ from django.conf.urls import patterns, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.views import login
+
 from app.views import views, navtiming
-from monitor import settings
+# from monitor.settings import settings
+from django.conf import settings
 
 urlpatterns = patterns('',
                        url(r'^$', views.home, name='home'),

@@ -11,7 +11,7 @@ import os, sys
 
 sys.path.append('/opt/django/monitor/monitor')
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'monitor.settings'
+# os.environ['DJANGO_SETTINGS_MODULE'] = 'monitor.settings'
 
 from django.core.wsgi import get_wsgi_application
 
