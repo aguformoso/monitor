@@ -23,6 +23,13 @@ SECRET_KEY = 'l_1(qzd#nkgn6uyd(f)$^f@k=^tqsdexysz$@$p053xv3!m95!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+if HOSTNAME == 'simon':
+    DEBUG = False
+    CHARTS_URL = "https://charts.dev.lacnic.net"  # *no* trailing slash
+else:
+    # Developer mode
+    DEBUG = True
+    CHARTS_URL = "http://127.0.0.1:8001"  # ""https://charts.dev.lacnic.net"
 
 ADMINS = (
     ('Agustin Formoso', 'agustin@lacnic.net')
