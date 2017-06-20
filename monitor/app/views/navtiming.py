@@ -72,7 +72,7 @@ def navtiming(request):
             }
         })
     )
-    timeline = requests.post('http://127.0.0.1:8001/code/', data=data, headers={'Connection': 'close'}).text
+    timeline = requests.post(settings.CHARTS_URL + '/code/', data=data, headers={'Connection': 'close'}).text
 
     rtts = defaultdict(list)
     for m in meds:
@@ -125,7 +125,7 @@ def navtiming(request):
             }
         })
     )
-    req_timeline = requests.post(settings.CHARTS_URL, data=data, headers={'Connection': 'close'}).text
+    req_timeline = requests.post(settings.CHARTS_URL + '/code/', data=data, headers={'Connection': 'close'}).text
 
     rtts = defaultdict(list)
     for m in meds:
@@ -178,7 +178,7 @@ def navtiming(request):
             }
         })
     )
-    dns_timeline = requests.post(settings.CHARTS_URL, data=data, headers={'Connection': 'close'}).text
+    dns_timeline = requests.post(settings.CHARTS_URL + '/code/', data=data, headers={'Connection': 'close'}).text
 
     ##################
     # Platform-wide metrics
@@ -228,7 +228,7 @@ def navtiming(request):
             }
         })
     )
-    platform_timeline = requests.post(settings.CHARTS_URL, data=data, headers={'Connection': 'close'}).text
+    platform_timeline = requests.post(settings.CHARTS_URL + '/code/', data=data, headers={'Connection': 'close'}).text
 
     return render(
         request,
