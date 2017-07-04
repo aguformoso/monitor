@@ -19,33 +19,36 @@
             }
         });
 
-        require(["boomerang", "rt", "navtiming"], function (/* No params */) {
-            // Configuration loaded now, safe to do other require calls
-            // that depend on that config.
+        require(["boomerang"], function (/* No params */) {
 
-            //  Launch a blocking fetch before running BOOMR
-            fetch(
-                'https://simon.lacnic.net/getCountry'
-            ).then(function (a) {
-                return a.text();
-            }).then(function (country_origin) {
+            require(["rt", "navtiming"], function (/* No params */) {
+                // Configuration loaded now, safe to do other require calls
+                // that depend on that config.
 
-                //  After knowing the country, run BOOMR
-                BOOMR.subscribe("before_beacon", function (o) {
+                //  Launch a blocking fetch before running BOOMR
+                fetch(
+                    'https://simon.lacnic.net/getCountry'
+                ).then(function (a) {
+                    return a.text();
+                }).then(function (country_origin) {
 
-                    //  Native fetch implementation is not ready for POST yet...
-                    //  Polyfill version neither... :( https://github.com/github/fetch/blob/master/fetch.js
+                    //  After knowing the country, run BOOMR
+                    BOOMR.subscribe("before_beacon", function (o) {
 
-                    o.user_agent = navigator.userAgent;
-                    o.country_origin = country_origin;
-                });
+                        //  Native fetch implementation is not ready for POST yet...
+                        //  Polyfill version neither... :( https://github.com/github/fetch/blob/master/fetch.js
 
-                BOOMR.init({
-                    beacon_url: "https://monitor.dev.lacnic.net/post/",
-                    beacon_type: "POST",
-                    log: false
-                });
-            })
+                        o.user_agent = navigator.userAgent;
+                        o.country_origin = country_origin;
+                    });
+
+                    BOOMR.init({
+                        beacon_url: "https://monitor.dev.lacnic.net/post/",
+                        beacon_type: "POST",
+                        log: false
+                    });
+                })
+            });
         });
     }
 }(document, "script"));
