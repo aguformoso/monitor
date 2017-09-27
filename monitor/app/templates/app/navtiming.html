@@ -5,14 +5,14 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>Navigation Timing metrics</title>
+    <title>Navigation Timing Monitor</title>
 
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-    <script src="https://www.google.com/jsapi" type="text/javascript"></script>
+{#    <script src="https://www.google.com/jsapi" type="text/javascript"></script>#}
 
 
     <!-- Progress bar -->
@@ -26,37 +26,90 @@
     <link type="image/x-icon" href="{% static "app/imgs/favicon-b.ico" %}" rel="shortcut icon">
     <link rel="apple-touch-icon" href="{% static "app/imgs/favicon-b.ico" %}">
 
+    <script type="application/javascript">
+
+        // Global variable CHARTS
+        // Accessible from child templates
+        // Queue until CHARTS object if fully functional
+        var CHARTS = {
+            queue: [],
+            draw: function (chart) {
+                this.queue.push(chart);
+            }
+        };
+
+        (function (f, b) {
+
+            var c = f.createElement(b),
+                e = f.getElementsByTagName(b)[0];
+            c.src = "https://cdn.dev.lacnic.net/require.js";
+            c.type = "text/javascript";
+            e.parentNode.insertBefore(c, e);
+            c.onload = c.onreadystatechange = function () {
+                // Require libraries loaded
+                requirejs.config({
+                    "paths": {
+                        "charts": "https://cdn.rawgit.com/LACNIC/static/96dacbac/charts",
+                        "jsapi": "https://www.gstatic.com/charts/loader",
+                        "jquery": "https://cdn.dev.lacnic.net/jquery-1.11.1.min"
+                    }
+                });
+
+                if (typeof google != 'undefined' && typeof google.charts != 'undefined') {
+                    require(["charts", "jquery"], function (ASYNC_CHARTS, $) {
+                        onLoad(ASYNC_CHARTS);
+                    });
+                } else {
+                    require(["charts", "jquery", "jsapi"], function (ASYNC_CHARTS, $) {
+                        onLoad(ASYNC_CHARTS);
+                    });
+                }
+
+                var onLoad = function (ASYNC_CHARTS) {
+
+                    ASYNC_CHARTS;
+                    for (i in CHARTS.queue) {
+                        ASYNC_CHARTS.draw(CHARTS.queue[i])
+                    }
+                    // After unloading the queue, just replace for the new definition
+                    CHARTS = ASYNC_CHARTS;
+                }
+
+
+            }
+        }(document, "script"));
+    </script>
+
 </head>
 
 <body>
 
-{#Barra anaranjada#}
+{# Barra primaria #}
 <div id="barra-primaria" class="navbar">
 
-    <a href="https://www.labs.lacnic.net" title="LACNIC labs" class="pull-left">
+    <a href="https://www.labs.lacnic.net" title="LACNIC labs" class="pull-right">
         <img src="{% static 'app/imgs/logos/logo_labs.png' %}" border="0" class="hidden-xs"
              alt="LACNIC Labs" style="max-height: 5em;"/>
         <img src="{% static 'app/imgs/logos/logo_labs_small.png' %}" border="0" class="visible-xs"
              alt="LACNIC Labs" style="max-height: 3em;"/>
     </a>
 
-    <a id="titulo-primario" class="navbar-brand pull-right" href="{% url 'home' %}">
+    <a id="titulo-primario" class="navbar-brand pull-left" href="{% url 'home' %}">
         <h2>
-            NAT Meter
+            Navigation Timing Monitor
         </h2>
     </a>
 </div>
 
-{#Segunda barra#}
+{# Barra secundaria #}
 <div id="barra-secundaria" class="navbar" style="margin-bottom: 0">
 
     <ul class="nav navbar-nav hidden-xs">
-        {#        <li><a href="http://lacnic.net">{% trans "bar.secondary.home" %}</a></li>#}
-        {#        <li><a href="http://labs.lacnic.net">{% trans "bar.secondary.blog" %}</a></li>#}
-        <li><a href="http://labs.lacnic.net">LACNIC Labs</a></li>
-        <li><a href="http://lacnic.net">LACNIC Home</a></li>
-        <li><a href="https://simon.lacnic.net">Proyecto Simón</a></li>
+        <li><a href="http://lacnic.net">Home de LACNIC</a></li>
+        <li><a href="http://labs.lacnic.net">Blog LACNIC Labs</a></li>
         <li><a href="https://natmeter.labs.lacnic.net">NAT Meter</a></li>
+        <li><a href="https://simon.lacnic.net">Proyecto Simón</a></li>
+        <li><a href="https://portaddedatos.dev.lacnic.net">Datos Abiertos (Piloto)</a></li>
     </ul>
 
     <ul id="setlang" class="nav navbar-nav navbar-right" style="margin-right: 1em; margin-left: 1em;">
@@ -89,82 +142,142 @@
 
 <div class="panel panel-default">
 
-    <div id="site" style="margin-top: 5em;">
-        <h1>Métricas web recolectadas</h1>
-        <p>Sitios incluidos en este reporte</p>
-        <ul>
-            {% for p in pages %}
-                <li>{{ p }}</li>
-            {% endfor %}
-        </ul>
 
-        <div class="row">
-            <div class="col-lg-2">
-                <h3>TCP connection timeline</h3>
-            </div>
+    <div class="container">
 
-            <script type="text/javascript">
-                {{ timeline | safe }}
-            </script>
-            <div class="col-lg-10">
-                <div id="timeline"></div>
-            </div>
+
+        <div class="header clearfix">
+            {#        Nada#}
         </div>
 
+        <div id="fondo" class="row marketing">
+            {% block content %}
+                {#                Every child's content will get rendered in here.#}
+            {% endblock %}
 
-        <div class="row">
-            <div class="col-lg-2">
-                <h3>HTTP/s response time</h3>
-                <p>Tiempo que transcurre entre el envío de una solicitud HTTP y la llegada de su respuesta</p>
+
+            <div id="site" style="margin-top: 5em;">
+                <h1>Métricas web recolectadas</h1>
+                <p>Sitios incluidos en este reporte</p>
+                <ul>
+                    {% for p in pages %}
+                        <li>{{ p }}</li>
+                    {% endfor %}
+                </ul>
+
+                <div class="row">
+                    <div class="col-lg-2">
+                        <h3>TCP connection timeline</h3>
+                    </div>
+
+                    <script type="text/javascript">
+{#                        {{ timeline | safe }}#}
+                    </script>
+                    <div class="col-lg-10">
+                        <div id="timeline"></div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-lg-2">
+                        <h3>HTTP/s response time</h3>
+                        <p>Tiempo que transcurre entre el envío de una solicitud HTTP y la llegada de su respuesta</p>
+                    </div>
+
+                    <div class="col-lg-10">
+                        <script type="text/javascript">
+{#                            {{ req_timeline | safe }}#}
+                        </script>
+                        <div id="req_timeline"></div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-lg-2">
+                        <h3>DNS resolution timeline (not cached)</h3>
+                    </div>
+
+                    <div class="col-lg-10">
+                        <script type="text/javascript">
+{#                            {{ dns_timeline | safe }}#}
+                        </script>
+                        <div id="dns_timeline"></div>
+                    </div>
+                </div>
             </div>
 
-            <div class="col-lg-10">
-                <script type="text/javascript">
-                    {{ req_timeline | safe }}
-                </script>
-                <div id="req_timeline"></div>
+            <div id="platform">
+                <h2>Datos de la plataforma</h2>
+
+                <div class="row">
+                    <div class="col-lg-2">
+                        <h3>Cantidad de mediciones</h3>
+                        <p>Aquí se muestra la cantidad de mediciones realizadas, agregadas por minuto.</p>
+                    </div>
+
+                    <div class="col-lg-10">
+{#                        <script type="text/javascript">#}
+{#                            {{ platform_timeline | safe }}#}
+{#                        </script>#}
+                        <div id="platform_timeline" class="timeseries" style="width: 100%"></div>
+                    </div>
+                </div>
             </div>
+
+            <div id="about">
+                <h2>Acerca</h2>
+            </div>
+
         </div>
-
-
-        <div class="row">
-            <div class="col-lg-2">
-                <h3>DNS resolution timeline (not cached)</h3>
-            </div>
-
-            <div class="col-lg-10">
-                <script type="text/javascript">
-                    {{ dns_timeline | safe }}
-                </script>
-                <div id="dns_timeline"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="platform">
-        <h2>Datos de la plataforma</h2>
-
-        <div class="row">
-            <div class="col-lg-2">
-                <h3>Cantidad de mediciones</h3>
-                <p>Aquí se muestra la cantidad de mediciones realizadas, agregadas por minuto.</p>
-            </div>
-
-            <div class="col-lg-10">
-                <script type="text/javascript">
-                    {{ platform_timeline | safe }}
-                </script>
-                <div id="platform_timeline" class="timeseries" style="width: 100%"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="about">
-        <h2>Acerca</h2>
     </div>
 
 </div>
 
+<script type="application/javascript">
+    CHARTS.draw({
+        x: {{ platform_timeline.x | safe }},
+        ys: [{{ platform_timeline.y1 | safe }}, {{ platform_timeline.y2 | safe }}],
+        labels: ['v4', 'v6'],
+        kind: 'LineChart',
+        divId: 'platform_timeline',
+        xType: 'date',
+{#        colors: ['C53425'],#}
+        my_options: {
+            chartArea: {
+                width: "50%",
+            },
+            vAxis: {
+                viewWindow: {
+                    max: Math.max({{ platform_timeline.y1 | safe }})
+                }
+            }
+
+        }
+    });
+
+    CHARTS.draw({
+        x: {{ dns_timeline.x | safe }},
+        ys: [
+            {{ dns_timeline.p10 | safe }},
+            {{ dns_timeline.p25 | safe }},
+            {{ dns_timeline.p50 | safe }},
+            {{ dns_timeline.p75 | safe }},
+            {{ dns_timeline.p95 | safe }}
+        ],
+        labels: ['p10', 'p25', 'p50', 'p75', 'p90'],
+        kind: 'LineChart',
+        divId: 'dns_timeline',
+        xType: 'date',
+        colors: ['blue', 'green', 'yellow', 'orange', 'red'],
+        my_options: {
+            chartArea: {
+                width: "50%",
+            }
+        }
+    });
+</script>
 
 </body>
 </html>

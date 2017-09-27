@@ -45,7 +45,7 @@ def navtiming(request):
         ]),
         divId='timeline',
         labels=json.dumps([
-            '90 th perc.',
+            '90th perc.',
             '75th perc.',
             '50th perc.',
             '25th perc.',
@@ -135,51 +135,24 @@ def navtiming(request):
 
         if rtt <= 0: continue
 
-        rtts[date.replace(minute=0, second=0).strftime("%Y-%m-%dT%H:%M:%S")].append(rtt)
+        rtts[date.replace(minute=0, second=0).strftime("%Y-%m-%d")].append(rtt)
 
     p90 = list([np.percentile(rtt_list, 90) for rtt_list in rtts.values()])
-    data = dict(
-        x=json.dumps(
-            list(rtts.keys())
-        ),
-        ys=json.dumps([
-            p90,
-            list([np.percentile(rtt_list, 75) for rtt_list in rtts.values()]),
-            list([np.percentile(rtt_list, 50) for rtt_list in rtts.values()]),
-            list([np.percentile(rtt_list, 25) for rtt_list in rtts.values()]),
-            list([np.percentile(rtt_list, 10) for rtt_list in rtts.values()])
-        ]),
-        divId='dns_timeline',
-        labels=json.dumps([
-            '90 th perc.',
-            '75th perc.',
-            '50th perc.',
-            '25th perc.',
-            '10th perc.'
-        ]),
-        colors=json.dumps([
-            'red',
-            'orange',
-            'yellow',
-            'green',
-            'blue'
-        ]),
-        kind='LineChart',
-        xType='datetime',
-        my_options=json.dumps({
-            'lineWidth': .25,
-            'chartArea': {
-                'width': "50%"
-            },
-            'vAxis': {
-                'viewWindow': {
-                    'max': np.median(p90)*5.0
-                },
-                'logScale': 'true'
-            }
-        })
-    )
-    dns_timeline = requests.post(settings.CHARTS_URL + '/code/', data=data, headers={'Connection': 'close'}).text
+    p75 = [np.percentile(rtt_list, 75) for rtt_list in rtts.values()]
+    p50 = [np.percentile(rtt_list, 50) for rtt_list in rtts.values()]
+    p25 = [np.percentile(rtt_list, 25) for rtt_list in rtts.values()]
+    p10 = [np.percentile(rtt_list, 10) for rtt_list in rtts.values()]
+
+    x = list(rtts.keys())
+
+    dns_timeline = {
+        'x':x,
+        'p90':p90,
+        'p75':p75,
+        'p50':p50,
+        'p25':p25,
+        'p10':p10
+    }
 
     ##################
     # Platform-wide metrics
@@ -188,7 +161,7 @@ def navtiming(request):
     rtts_objects = defaultdict(lambda: defaultdict(int))
     for m in Medicion.objects.filter(
             date__gte=datetime.now() - timedelta(days=7)):
-        date = m.date.replace(minute=0, second=0).strftime("%Y-%m-%dT%H:%M:%S")
+        date = m.date.replace(minute=0, second=0).strftime("%Y-%m-%d")
 
         if m.isv4:
             rtts_objects[date]['v4'] += 1
@@ -197,39 +170,9 @@ def navtiming(request):
             rtts_objects[date]['v4'] += 0
             rtts_objects[date]['v6'] += 1
 
-    data = dict(
-        x=json.dumps(
-            list(rtts_objects.keys())
-        ),
-        ys=json.dumps([
-            list([c['v4'] for c in rtts_objects.values()]),
-            list([c['v6'] for c in rtts_objects.values()])
-        ]),
-        divId='platform_timeline',
-        labels=json.dumps([
-            'v4',
-            'v6.'
-        ]),
-        colors=json.dumps([
-            'red',
-            'green'
-        ]),
-        kind='LineChart',
-        xType='datetime',
-        my_options=json.dumps({
-            'lineWidth': .25,
-            'chartArea': {
-                'width': "50%"
-            },
-            'vAxis': {
-                'viewWindow': {
-                    'max': max([c['v4'] for c in rtts_objects.values()])
-                },
-                'logScale': 'true'
-            }
-        })
-    )
-    platform_timeline = requests.post(settings.CHARTS_URL + '/code/', data=data, headers={'Connection': 'close'}).text
+    y1 = [c['v4'] for c in rtts_objects.values()]
+    y2 = [c['v6'] for c in rtts_objects.values()]
+    x = rtts_objects.keys()
 
     return render(
         request,
@@ -238,7 +181,7 @@ def navtiming(request):
             'timeline': timeline,
             'req_timeline': req_timeline,
             'dns_timeline': dns_timeline,
-            'platform_timeline': platform_timeline,
+            'platform_timeline': {'x':x, 'y1':y1, 'y2':y2},
             'pages': [p.url for p in pages]
         }
     )
