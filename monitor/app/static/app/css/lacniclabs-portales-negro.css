@@ -198,6 +198,6 @@ footer * {
     display: inline-block;
 }
 
-.mprogress, .buffer-bg, .ui-mprogress .bar-bg, {
-	background: transparent;
-}
+/*.mprogress, .buffer-bg, .ui-mprogress .bar-bg {*/
+	/*background: transparent;*/
+/*}*/

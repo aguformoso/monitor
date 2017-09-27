@@ -170,9 +170,6 @@
                         <h3>TCP connection timeline</h3>
                     </div>
 
-                    <script type="text/javascript">
-{#                        {{ timeline | safe }}#}
-                    </script>
                     <div class="col-lg-10">
                         <div id="timeline"></div>
                     </div>
@@ -186,9 +183,6 @@
                     </div>
 
                     <div class="col-lg-10">
-                        <script type="text/javascript">
-{#                            {{ req_timeline | safe }}#}
-                        </script>
                         <div id="req_timeline"></div>
                     </div>
                 </div>
@@ -200,9 +194,6 @@
                     </div>
 
                     <div class="col-lg-10">
-                        <script type="text/javascript">
-{#                            {{ dns_timeline | safe }}#}
-                        </script>
                         <div id="dns_timeline"></div>
                     </div>
                 </div>
@@ -218,9 +209,6 @@
                     </div>
 
                     <div class="col-lg-10">
-{#                        <script type="text/javascript">#}
-{#                            {{ platform_timeline | safe }}#}
-{#                        </script>#}
                         <div id="platform_timeline" class="timeseries" style="width: 100%"></div>
                     </div>
                 </div>
@@ -250,12 +238,40 @@
             },
             vAxis: {
                 viewWindow: {
-                    max: Math.max({{ platform_timeline.y1 | safe }})
+                    max: Math.max({{ platform_timeline.p95 | safe }})
                 }
             }
 
         }
     });
+
+    CHARTS.draw({
+        x: {{ req_timeline.x | safe }},
+        ys: [
+            {{ req_timeline.p10 | safe }},
+            {{ req_timeline.p25 | safe }},
+            {{ req_timeline.p50 | safe }},
+            {{ req_timeline.p75 | safe }},
+            {{ req_timeline.p95 | safe }}
+        ],
+        labels: ['p10', 'p25', 'p50', 'p75', 'p90'],
+        kind: 'LineChart',
+        divId: 'req_timeline',
+        xType: 'date',
+        colors: ['FF4B38', 'F2230C', 'CC1D0A', '991607', '871306'],
+        my_options: {
+            lineWidth: 1,
+            chartArea: {
+                width: "50%",
+            },
+            vAxis: {
+                viewWindow: {
+                    max: Math.max({{ req_timeline.p95 | safe }})
+                }
+            }
+        }
+    });
+
 
     CHARTS.draw({
         x: {{ dns_timeline.x | safe }},
@@ -270,10 +286,41 @@
         kind: 'LineChart',
         divId: 'dns_timeline',
         xType: 'date',
-        colors: ['blue', 'green', 'yellow', 'orange', 'red'],
+        colors: ['CA5310', 'BB4D00', '8F250C', '691E06', '4F1704'],
         my_options: {
             chartArea: {
                 width: "50%",
+            },
+            vAxis: {
+                viewWindow: {
+                    max: Math.max({{ dns_timeline.p95 | safe }})
+                }
+            }
+        }
+    });
+
+    CHARTS.draw({
+        x: {{ timeline.x | safe }},
+        ys: [
+            {{ timeline.p10 | safe }},
+            {{ timeline.p25 | safe }},
+            {{ timeline.p50 | safe }},
+            {{ timeline.p75 | safe }},
+            {{ timeline.p95 | safe }}
+        ],
+        labels: ['p10', 'p25', 'p50', 'p75', 'p90'],
+        kind: 'LineChart',
+        divId: 'timeline',
+        xType: 'date',
+        colors: ['7BD4ED', '4ECAED', '00B9ED', '00A5D3', '007FA3'],
+        my_options: {
+            chartArea: {
+                width: "50%",
+            },
+            vAxis: {
+                viewWindow: {
+                    max: Math.max({{ timeline.p95 | safe }})
+                }
             }
         }
     });
